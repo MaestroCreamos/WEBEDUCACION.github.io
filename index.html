@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educación Acelerada - CREAMOS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background-color: #ffffff;
+        }
+
+        /* Page Loader */
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 1;
+            transition: opacity 0.8s ease;
+        }
+
+        .page-loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader-content {
+            text-align: center;
+            color: white;
+        }
+
+        .loader-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Navigation */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 2px 30px rgba(0,0,0,0.15);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .logo-text {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .logo-subtitle {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            color: #2c3e50;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.7rem 1.2rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            background: #3498db;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        /* Dropdown Styles */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: white;
+            min-width: 220px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            z-index: 1001;
+            border-radius: 12px;
+            padding: 0.5rem 0;
+            top: calc(100% + 10px);
+            left: 0;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+            animation: fadeInDown 0.3s ease;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dropdown-content a {
+            color: #2c3e50;
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border-left: 3px solid transparent;
+        }
+
+        .dropdown-content a:hover {
+            background: #f8f9fa;
+            color: #3498db;
+            border-left-color: #3498db;
+        }
+
+        .dropdown-content .submenu-header {
+            font-weight: 600;
+            color: #7f8c8d;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0.5rem 1.5rem 0.3rem;
+            border-bottom: 1px solid #ecf0f1;
+            margin-bottom: 0.3rem;
+        }
+
+        .mobile-menu {
+            display: none;
+            background: none;
+            border: none;
+            color: #2c3e50;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.9), rgba(44, 62, 80, 0.8)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><defs><pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            padding: 0 2rem;
+            margin-top: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="25" cy="25" r="2" fill="rgba(255,255,255,0.1)"><animate attributeName="opacity" values="0;1;0" dur="3s" repeatCount="indefinite"/></circle><circle cx="75" cy="75" r="1.5" fill="rgba(255,255,255,0.1)"><animate attributeName="opacity" values="1;0;1" dur="4s" repeatCount="indefinite"/></circle></svg>');
+            pointer-events: none;
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-content {
+            color: white;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff, #ecf0f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 0.5rem;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #ffffff;
+            color: #2c3e50;
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: white;
+            transform: translateY(-3px);
+        }
+
+        .hero-visual {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-image {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .hero-image:hover {
+            transform: scale(1.02);
+        }
+
+        /* About Section */
+        .about-section {
+            padding: 6rem 2rem;
+            background: #f8f9fa;
+        }
+
+        .about-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-content h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+        }
+
+        .about-content p {
+            font-size: 1.1rem;
+            color: #5a6c7d;
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+
+        .about-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        /* Programs Section */
+        .programs-section {
+            padding: 6rem 2rem;
+            background: white;
+        }
+
+        .programs-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            margin-bottom: 4rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .programs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .program-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 1px solid #f1f3f4;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .program-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+        }
+
+        .program-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(52, 152, 219, 0.2);
+        }
+
+        .program-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            margin: 0 auto 1.5rem;
+        }
+
+        .program-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .program-card p {
+            color: #5a6c7d;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .program-schedule {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .program-schedule strong {
+            color: #2c3e50;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Services Section */
+        .services-section {
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, #f8f9fa, #ffffff);
+        }
+
+        .services-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .service-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 45px rgba(52, 152, 219, 0.15);
+        }
+
+        .service-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .service-card p {
+            color: #5a6c7d;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            padding: 4rem 2rem;
+            background: #2c3e50;
+            color: white;
+        }
+
+        .contact-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .contact-info h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            background: #3498db;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .contact-text strong {
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        /* Content Sections (Hidden by default) */
+        .content-section {
+            display: none;
+            min-height: 100vh;
+            padding: 6rem 2rem 4rem;
+            background: white;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .back-btn {
+            background: #3498db;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .hero-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .about-container,
+            .contact-container {
+                grid-template-columns: 1fr;
+            }
+
+            .about-features {
+                grid-template-columns: 1fr;
+            }
+
+            .programs-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dropdown-content {
+                position: static;
+                display: none;
+                box-shadow: none;
+                background: #f8f9fa;
+                border-radius: 0;
+                margin-top: 0.5rem;
+            }
+        }
+
+        /* Utility Classes */
+        .text-center { text-align: center; }
+        .mb-2 { margin-bottom: 1rem; }
+        .mb-3 { margin-bottom: 1.5rem; }
+        .mt-3 { margin-top: 1.5rem; }
+    </style>
+</head>
+<body>
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-content">
+            <div class="loader-spinner"></div>
+            <h2>CREAMOS</h2>
+            <p>Cargando...</p>
+        </div>
+    </div>
+
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="logo-container">
+                <div class="logo">C</div>
+                <div>
+                    <div class="logo-text">CREAMOS</div>
+                    <div class="logo-subtitle">Educación Acelerada</div>
+                </div>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link">Estudiantes</a>
+                    <div class="dropdown-content">
+                        <div class="submenu-header">Plan Diario</div>
+                        <a href="https://maestrocreamos.github.io/NOTASPLANDIARIO.github.io/" target="_blank">📊 Consulta de Calificaciones</a>
+                        <a href="https://maestrocreamos.github.io/TAREASDIARIO.github.io/" target="_blank">📝 Consulta de Tareas</a>
+                        
+                        <div class="submenu-header">Plan Domingo</div>
+                        <a href="https://maestrocreamos.github.io/NOTASDOMINGO.github.io/" target="_blank">📊 Consulta de Calificaciones</a>
+                        <a href="https://maestrocreamos.github.io/TAREADOMINGO.github.io/" target="_blank">📝 Consulta de Tareas</a>
+                    </div>
+                </li>
+                
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link">Maestros</a>
+                    <div class="dropdown-content">
+                        <div class="submenu-header">Tareas</div>
+                        <a href="https://maestrocreamos.github.io/portalmaestros.github.io/" target="_blank">📚 Plan Diario</a>
+                        <a href="#" onclick="showComingSoon('Plan Domingo - Tareas')">📚 Plan Domingo</a>
+                        
+                        <div class="submenu-header">Calificaciones</div>
+                        <a href="https://maestrocreamos.github.io/NOTASDIARIOMAESTROS.github.io/" target="_blank">📊 Plan Diario</a>
+                        <a href="https://maestrocreamos.github.io/NOTASDOMINGOMAESTROS.github.io/" target="_blank">📊 Plan Domingo</a>
+                    </div>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showPreinscripciones()">Inscripciones</a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="https://creamosguatemala.org/" class="nav-link" target="_blank">Sobre CREAMOS</a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="#" class="nav-link" onclick="showProgram()">Nuestro Programa</a>
+                </li>
+            </ul>
+            
+            <button class="mobile-menu">☰</button>
+        </div>
+    </nav>
+
+    <main id="mainContent">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-container">
+                <div class="hero-content">
+                    <div class="hero-badge">🎓 Educación Acelerada CREAMOS</div>
+                    <h1>Tu educación te está esperando</h1>
+                    <p>Educación gratuita y acreditada para jóvenes y adultos. Solo un día por semana. Sin barreras, con todo el apoyo que necesitas.</p>
+                    
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">559</span>
+                            <span class="stat-label">Participantes 2024</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">74</span>
+                            <span class="stat-label">Graduados exitosos</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">100%</span>
+                            <span class="stat-label">Gratuito</span>
+                        </div>
+                    </div>
+                    
+                    <div class="hero-buttons">
+                        <a href="#" class="btn btn-primary" onclick="showPreinscripciones()">
+                            📝 Inscríbete Gratis
+                        </a>
+                        <a href="#about" class="btn btn-secondary">
+                            💡 Conoce más
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="hero-visual">
+                    <img src="principal.jpg" alt="Estudiantes CREAMOS" class="hero-image">
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Access Section -->
+        <section style="padding: 4rem 2rem; background: linear-gradient(135deg, #3498db, #2c3e50);">
+            <div style="max-width: 1200px; margin: 0 auto; text-align: center;">
+                <h2 style="color: white; font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem;">Acceso Rápido</h2>
+                <p style="color: rgba(255,255,255,0.9); font-size: 1.2rem; margin-bottom: 3rem; max-width: 600px; margin-left: auto; margin-right: auto;">Selecciona tu perfil para acceder a los servicios digitales</p>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem;">
+                    <!-- Botón Estudiantes -->
+                    <div style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 20px; padding: 2.5rem; border: 2px solid rgba(255,255,255,0.2); transition: all 0.3s ease;" 
+                         onmouseover="this.style.transform='translateY(-10px)'; this.style.background='rgba(255,255,255,0.2)'" 
+                         onmouseout="this.style.transform='translateY(0)'; this.style.background='rgba(255,255,255,0.1)'">
+                        <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 2.5rem;">🎓</div>
+                        <h3 style="color: white; font-size: 1.8rem; font-weight: 600; margin-bottom: 1rem;">ESTUDIANTES</h3>
+                        <p style="color: rgba(255,255,255,0.8); margin-bottom: 2rem; line-height: 1.6;">Accede a tus calificaciones, tareas y toda la información académica</p>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div class="dropdown" style="position: relative;">
+                                <button style="width: 100%; background: white; color: #2c3e50; border: none; padding: 1rem 1.5rem; border-radius: 12px; font-weight: 600; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease;" 
+                                        onmouseover="this.style.background='#f8f9fa'" 
+                                        onmouseout="this.style.background='white'">
+                                    📚 Plan Diario (Mujeres) ▼
+                                </button>
+                                <div class="dropdown-content" style="display: none; position: absolute; background: white; width: 100%; box-shadow: 0 8px 32px rgba(0,0,0,0.15); z-index: 1001; border-radius: 12px; padding: 0.5rem 0; top: calc(100% + 10px); left: 0; border: 1px solid rgba(0,0,0,0.1);">
+                                    <a href="https://maestrocreamos.github.io/NOTASPLANDIARIO.github.io/" target="_blank" style="color: #2c3e50; padding: 0.8rem 1.5rem; text-decoration: none; display: block; transition: all 0.3s ease; font-weight: 500;">📊 Ver Calificaciones</a>
+                                    <a href="https://maestrocreamos.github.io/TAREASDIARIO.github.io/" target="_blank" style="color: #2c3e50; padding: 0.8rem 1.5rem; text-decoration: none; display: block; transition: all 0.3s ease; font-weight: 500;">📝 Ver Tareas</a>
+                                    <a href="https://wa.me/50255709214?text=Hola,%20necesito%20ayuda%20con%20mi%20cuenta%20de%20estudiante%20del%20Plan%20Diario." target="_blank" style="color: #25D366; padding: 0.8rem 1.5rem; text-decoration: none; display: block; transition: all 0.3s ease; font-weight: 500; border-top: 1px solid #f1f3f4;">💬 Soporte WhatsApp</a>
+                                </div>
+                            </div>
+                            
+                            <div class="dropdown" style="position: relative;">
+                                <button style="width: 100%; background: rgba(255,255,255,0.9); color: #2c3e50; border: none; padding: 1rem 1.5rem; border-radius: 12px; font-weight: 600; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease;" 
+                                        onmouseover="this.style.background='rgba(255,255,255,1)'" 
+                                        onmouseout="this.style.background='rgba(255,255,255,0.9)'">
+                                    🗓️ Plan Domingo (Hombres) ▼
+                                </button>
+                                <div class="dropdown-content" style="display: none; position: absolute; background: white; width: 100%; box-shadow: 0 8px 32px rgba(0,0,0,0.15); z-index: 1001; border-radius: 12px; padding: 0.5rem 0; top: calc(100% + 10px); left: 0; border: 1px solid rgba(0,0,0,0.1);">
+                                    <a href="https://maestrocreamos.github.io/NOTASDOMINGO.github.io/" target="_blank" style="color: #2c3e50; padding: 0.8rem 1.5rem; text-decoration: none; display: block; transition: all 0.3s ease; font-weight: 500;">📊 Ver Calificaciones</a>
+                                    <a href="https://maestrocreamos.github.io/TAREADOMINGO.github.io/" target="_blank" style="color: #2c3e50; padding: 0.8rem 1.5rem; text-decoration: none; display: block; transition: all 0.3s ease; font-weight: 500;">📝 Ver Tareas</a>
+                                    <a href="https://wa.me/50244160597?text=Hola,%20necesito%20ayuda%20con%20mi%20cuenta%20de%20estudiante%20del%20Plan%20Domingo." target="_blank" style="color: #25D366; padding: 0.8rem 1.5rem; text-decoration: none; display: block; transition: all 0.3s ease; font-weight: 500; border-top: 1px solid #f1f3f4;">💬 Soporte WhatsApp</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Botón Maestros -->
+                    <div style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 20px; padding: 2.5rem; border: 2px solid rgba(255,255,255,0.2); transition: all 0.3s ease;" 
+                         onmouseover="this.style.transform='translateY(-10px)'; this.style.background='rgba(255,255,255,0.2)'" 
+                         onmouseout="this.style.transform='translateY(0)'; this.style.background='rgba(255,255,255,0.1)'">
+                        <div style="width: 80px; height: 80px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; font-size: 2.5rem;">👨‍🏫</div>
+                        <h3 style="color: white; font-size: 1.8rem; font-weight: 600; margin-bottom: 1rem;">MAESTROS</h3>
+                        <p style="color: rgba(255,255,255,0.8); margin-bottom: 2rem; line-height: 1.6;">Gestiona calificaciones, tareas y seguimiento académico</p>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div class="dropdown" style="position: relative;">
+                                <button style="width: 100%; background: white; color: #2c3e50; border: none; padding: 1rem 1.5rem; border-radius: 12px; font-weight: 600; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease;" 
+                                        onmouseover="this.style.background='#f8f9fa'" 
+                                        onmouseout="this.style.background='white'">
+                                    📚 Gestión de Tareas ▼
+                                </button>
+                                <div class="dropdown-content" style="display: none; position: absolute; background: white; width: 100%; box-shadow: 0 8px 32px rgba(0,0,0,0.15); z-index: 1001; border-radius: 12px; padding: 0.5rem 0; top: calc(100% + 10px); left: 0; border: 1px solid rgba(0,0,0,0.1);">
+                                    <a href="https://maestrocreamos.github.io/portalmaestros.github.io/" target="_blank" style="color: #2c3e50; padding: 0.8rem 1.5rem; text-decoration: none; display: block; transition: all 0.3s ease; font-weight: 500;">📅 Plan Diario</a>
+                                    <a href="#" onclick="showComingSoon('Plan Domingo - Tareas')" style="color: #7f8c8d; padding: 0.8rem 1.5rem; text-decoration: none; display: block; transition: all 0.3s ease; font-weight: 500;">🗓️ Plan Domingo (Próximamente)</a>
+                                </div>
+                            </div>
+                            
+                            <div class="dropdown" style="position: relative;">
+                                <button style="width: 100%; background: rgba(255,255,255,0.9); color: #2c3e50; border: none; padding: 1rem 1.5rem; border-radius: 12px; font-weight: 600; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease;" 
+                                        onmouseover="this.style.background='rgba(255,255,255,1)'" 
+                                        onmouseout="this.style.background='rgba(255,255,255,0.9)'">
+                                    📊 Gestión de Calificaciones ▼
+                                </button>
+                                <div class="dropdown-content" style="display: none; position: absolute; background: white; width: 100%; box-shadow: 0 8px 32px rgba(0,0,0,0.15); z-index: 1001; border-radius: 12px; padding: 0.5rem 0; top: calc(100% + 10px); left: 0; border: 1px solid rgba(0,0,0,0.1);">
+                                    <a href="https://maestrocreamos.github.io/NOTASDIARIOMAESTROS.github.io/" target="_blank" style="color: #2c3e50; padding: 0.8rem 1.5rem; text-decoration: none; display: block; transition: all 0.3s ease; font-weight: 500;">📅 Plan Diario</a>
+                                    <a href="https://maestrocreamos.github.io/NOTASDOMINGOMAESTROS.github.io/" target="_blank" style="color: #2c3e50; padding: 0.8rem 1.5rem; text-decoration: none; display: block; transition: all 0.3s ease; font-weight: 500;">🗓️ Plan Domingo</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="about-section" id="about">
+            <div class="about-container">
+                <div class="about-content">
+                    <h2>Rompiendo barreras socioeconómicas a través de la educación</h2>
+                    <p>El Programa de Educación Acelerada de CREAMOS está diseñado para jóvenes y adultos que enfrentaron obstáculos para completar su educación tradicional.</p>
+                    <p>Ofrecemos educación <strong>completamente gratuita</strong>, acreditada por el Ministerio de Educación, con una metodología flexible que se adapta a tu vida y responsabilidades.</p>
+                    
+                    <div class="about-features">
+                        <div class="feature-item">
+                            <div class="feature-icon">🎓</div>
+                            <div>
+                                <strong>Avalado por MINEDUC</strong>
+                                <p>Certificación oficial</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">📅</div>
+                            <div>
+                                <strong>Solo 1 día/semana</strong>
+                                <p>Horario flexible</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">💰</div>
+                            <div>
+                                <strong>100% Gratuito</strong>
+                                <p>Sin costos ocultos</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">📚</div>
+                            <div>
+                                <strong>Todo incluido</strong>
+                                <p>Materiales y apoyo</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="about-visual">
+                    <img src="Logo.png" alt="Logo CREAMOS" style="width: 100%; max-width: 400px; height: auto; border-radius: 20px;">
+                </div>
+            </div>
+        </section>
+
+        <!-- Programs Section -->
+        <section class="programs-section">
+            <div class="programs-container">
+                <h2 class="section-title">Modalidades de Estudio</h2>
+                <p class="section-subtitle">Elige la modalidad que mejor se adapte a tu estilo de vida y responsabilidades</p>
+                
+                <div class="programs-grid">
+                    <div class="program-card">
+                        <div class="program-icon">📅</div>
+                        <h3>Plan Diario</h3>
+                        <p>Modalidad diseñada especialmente para mujeres, con horarios distribuidos de lunes a jueves según el grado académico.</p>
+                        
+                        <div class="program-schedule">
+                            <strong>Horario:</strong>
+                            <p>8:15 AM - 3:30 PM</p>
+                            <strong>Días:</strong>
+                            <p>Lunes a Jueves (según grado)</p>
+                            <strong>Dirigido a:</strong>
+                            <p>Mujeres de todas las edades</p>
+                        </div>
+                        
+                        <a href="#" class="btn btn-primary" onclick="showServices('diario')">Ver servicios</a>
+                    </div>
+                    
+                    <div class="program-card">
+                        <div class="program-icon">🗓️</div>
+                        <h3>Plan Domingo</h3>
+                        <p>Modalidad especialmente diseñada para hombres, donde todos los grados estudian el mismo día y horario.</p>
+                        
+                        <div class="program-schedule">
+                            <strong>Horario:</strong>
+                            <p>8:15 AM - 3:30 PM</p>
+                            <strong>Días:</strong>
+                            <p>Domingos</p>
+                            <strong>Dirigido a:</strong>
+                            <p>Hombres de todas las edades</p>
+                        </div>
+                        
+                        <a href="#" class="btn btn-primary" onclick="showServices('domingo')">Ver servicios</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section class="services-section">
+            <div class="services-container">
+                <h2 class="section-title text-center">Servicios Integrales Gratuitos</h2>
+                <p class="section-subtitle">Más que educación: un ecosistema completo de apoyo para tu desarrollo</p>
+                
+                <div class="services-grid">
+                    <div class="service-card">
+                        <h3>👶 Cuidado Infantil</h3>
+                        <p>Servicio gratuito de niñeras para madres que estudian, garantizando que puedan enfocarse en su educación.</p>
+                    </div>
+                    
+                    <div class="service-card">
+                        <h3>💼 Inclusión Laboral</h3>
+                        <p>Orientación y apoyo para encontrar oportunidades de trabajo formal y mejorar tu situación económica.</p>
+                    </div>
+                    
+                    <div class="service-card">
+                        <h3>💻 Cursos de Computación</h3>
+                        <p>Capacitación en habilidades digitales con certificaciones reconocidas para el mercado laboral.</p>
+                    </div>
+                    
+                    <div class="service-card">
+                        <h3>🎯 Talleres Especializados</h3>
+                        <p>Diversos talleres de desarrollo personal y habilidades prácticas para la vida.</p>
+                    </div>
+                    
+                    <div class="service-card">
+                        <h3>💝 Apoyo Emocional</h3>
+                        <p>Acceso a servicios de apoyo psicológico y emocional como parte del programa Creamos Voces.</p>
+                    </div>
+                    
+                    <div class="service-card">
+                        <h3>📚 Materiales Incluidos</h3>
+                        <p>Todos los libros, cuadernos y materiales educativos necesarios, completamente gratuitos.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="contact-section">
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h3>¿Listo para comenzar tu educación?</h3>
+                    <p class="mb-3">Contáctanos por WhatsApp para iniciar tu proceso de inscripción. Estamos aquí para resolver todas tus dudas.</p>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">📱</div>
+                        <div>
+                            <strong>PLAN DIARIO (Mujeres)</strong>
+                            <p><a href="https://wa.me/50255709214?text=Hola,%20estoy%20interesada%20en%20el%20Plan%20Diario%20de%20Educación%20Acelerada.%20¿Podrían%20darme%20más%20información?" target="_blank" style="color: #3498db; text-decoration: none; font-weight: 600;">📱 WhatsApp: 5570-9214</a></p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">📱</div>
+                        <div>
+                            <strong>PLAN DOMINGO (Hombres)</strong>
+                            <p><a href="https://wa.me/50244160597?text=Hola,%20estoy%20interesado%20en%20el%20Plan%20Domingo%20de%20Educación%20Acelerada.%20¿Podrían%20darme%20más%20información?" target="_blank" style="color: #3498db; text-decoration: none; font-weight: 600;">📱 WhatsApp: 4416-0597</a></p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">📍</div>
+                        <div>
+                            <strong>Ubicación</strong>
+                            <p>Ciudad de Guatemala, Zona 3</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-visual">
+                    <div style="background: rgba(255,255,255,0.1); padding: 2rem; border-radius: 16px; backdrop-filter: blur(10px);">
+                        <h4 style="margin-bottom: 1rem;">Proceso de Inscripción</h4>
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <span style="background: #3498db; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">1</span>
+                                <span>Pre-inscripción</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <span style="background: #3498db; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">2</span>
+                                <span>Examen diagnóstico</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <span style="background: #3498db; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">3</span>
+                                <span>Semanas de adaptación</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <span style="background: #27ae60; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">✓</span>
+                                <span>¡Comenzar a estudiar!</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Services Detail Section -->
+    <section class="content-section" id="servicesSection">
+        <div class="content-container">
+            <button class="back-btn" onclick="showHome()">← Volver al Inicio</button>
+            <h2 class="section-title" id="servicesTitle">Servicios del Plan</h2>
+            
+            <div class="services-grid">
+                <div class="service-card">
+                    <h3>📊 Consulta de Calificaciones</h3>
+                    <p>Accede a tus calificaciones y seguimiento académico en tiempo real para monitorear tu progreso educativo.</p>
+                    <a id="notasLink" href="#" class="btn btn-primary" target="_blank">Consultar Notas</a>
+                </div>
+                
+                <div class="service-card">
+                    <h3>📝 Consulta de Tareas</h3>
+                    <p>Revisa tus tareas pendientes y entregadas de manera organizada, mantente al día con tus responsabilidades académicas.</p>
+                    <a id="tareasLink" href="#" class="btn btn-primary" target="_blank">Ver Tareas</a>
+                </div>
+                
+                <div class="service-card">
+                    <h3>ℹ️ Comunicados</h3>
+                    <p>Mantente informado sobre noticias importantes, eventos y comunicados del centro educativo.</p>
+                    <a href="#" class="btn btn-secondary">Próximamente</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Program Detail Section -->
+    <section class="content-section" id="programSection">
+        <div class="content-container">
+            <button class="back-btn" onclick="showHome()">← Volver al Inicio</button>
+            <h2 class="section-title text-center">Nuestro Programa de Educación Acelerada</h2>
+            
+            <div class="programs-grid">
+                <div class="program-card">
+                    <div class="program-icon">📅</div>
+                    <h3>Plan Diario - Modalidad Mujeres</h3>
+                    <div style="text-align: left; background: #f8f9fa; padding: 1.5rem; border-radius: 12px; margin: 1rem 0;">
+                        <p><strong>🕐 Horario:</strong> 8:15 AM - 3:30 PM</p>
+                        <p><strong>📅 Días:</strong> Lunes a Jueves (según grado académico)</p>
+                        <p><strong>👥 Dirigido a:</strong> Mujeres de 15 a 60 años</p>
+                        <p><strong>📍 Modalidad:</strong> Presencial</p>
+                        <p><strong>👶 Incluye:</strong> Servicio gratuito de cuidado infantil</p>
+                    </div>
+                    <p>Diseñado especialmente para mujeres que necesitan flexibilidad en sus horarios. Cada grado tiene asignado un día específico de la semana, permitiendo una mejor organización del tiempo personal y familiar.</p>
+                </div>
+                
+                <div class="program-card">
+                    <div class="program-icon">🗓️</div>
+                    <h3>Plan Domingo - Modalidad Hombres</h3>
+                    <div style="text-align: left; background: #f8f9fa; padding: 1.5rem; border-radius: 12px; margin: 1rem 0;">
+                        <p><strong>🕐 Horario:</strong> 8:15 AM - 3:30 PM</p>
+                        <p><strong>📅 Días:</strong> Domingos únicamente</p>
+                        <p><strong>👥 Dirigido a:</strong> Hombres de 15 a 60 años</p>
+                        <p><strong>📍 Modalidad:</strong> Presencial</p>
+                        <p><strong>👨‍🎓 Característica:</strong> Todos los grados el mismo día</p>
+                    </div>
+                    <p>Modalidad concentrada en un solo día de la semana, ideal para hombres que trabajan de lunes a sábado. Todos los grados académicos asisten el mismo día, creando un ambiente de comunidad y apoyo mutuo.</p>
+                </div>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #3498db, #2c3e50); color: white; padding: 3rem; border-radius: 20px; text-align: center; margin-top: 3rem;">
+                <h3 style="margin-bottom: 1rem;">💡 ¿Sabías que...?</h3>
+                <p style="font-size: 1.1rem; margin-bottom: 1.5rem;">Nuestro programa está diseñado con metodología acelerada, lo que significa que puedes completar tu educación en menos tiempo que la modalidad tradicional, sin sacrificar la calidad educativa.</p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-top: 2rem;">
+                    <div>
+                        <span style="display: block; font-size: 2rem; font-weight: bold;">✅</span>
+                        <span>Metodología probada</span>
+                    </div>
+                    <div>
+                        <span style="display: block; font-size: 2rem; font-weight: bold;">🎓</span>
+                        <span>Certificación oficial</span>
+                    </div>
+                    <div>
+                        <span style="display: block; font-size: 2rem; font-weight: bold;">⏰</span>
+                        <span>Horarios flexibles</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Page loader
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                document.getElementById('pageLoader').classList.add('hidden');
+            }, 1500);
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Navigation functions
+        function showHome() {
+            document.getElementById('mainContent').style.display = 'block';
+            document.getElementById('servicesSection').classList.remove('active');
+            document.getElementById('programSection').classList.remove('active');
+            window.scrollTo(0, 0);
+        }
+
+        function showServices(plan) {
+            document.getElementById('mainContent').style.display = 'none';
+            document.getElementById('programSection').classList.remove('active');
+            
+            const servicesSection = document.getElementById('servicesSection');
+            const servicesTitle = document.getElementById('servicesTitle');
+            const notasLink = document.getElementById('notasLink');
+            const tareasLink = document.getElementById('tareasLink');
+            
+            servicesTitle.textContent = `Servicios del Plan ${plan.charAt(0).toUpperCase() + plan.slice(1)}`;
+            
+            if (plan === 'diario') {
+                notasLink.href = 'https://maestrocreamos.github.io/NOTASPLANDIARIO.github.io/';
+                tareasLink.href = 'https://maestrocreamos.github.io/TAREASDIARIO.github.io/';
+            } else if (plan === 'domingo') {
+                notasLink.href = 'https://maestrocreamos.github.io/NOTASDOMINGO.github.io/';
+                tareasLink.href = 'https://maestrocreamos.github.io/TAREADOMINGO.github.io/';
+            }
+            
+            servicesSection.classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function showProgram() {
+            document.getElementById('mainContent').style.display = 'none';
+            document.getElementById('servicesSection').classList.remove('active');
+            document.getElementById('programSection').classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function showPreinscripciones() {
+            // Detectar si es móvil o desktop para mostrar mensaje apropiado
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                // En móvil, mostrar opciones directas
+                const response = confirm('¡Excelente decisión! 🎉\n\n¿Qué modalidad te interesa?\n\n✅ Presiona "Aceptar" para Plan Diario (Mujeres)\n❌ Presiona "Cancelar" para Plan Domingo (Hombres)');
+                
+                if (response) {
+                    // Plan Diario
+                    window.open('https://wa.me/50255709214?text=Hola,%20estoy%20interesada%20en%20el%20Plan%20Diario%20de%20Educación%20Acelerada.%20¿Podrían%20darme%20más%20información?', '_blank');
+                } else {
+                    // Plan Domingo
+                    window.open('https://wa.me/50244160597?text=Hola,%20estoy%20interesado%20en%20el%20Plan%20Domingo%20de%20Educación%20Acelerada.%20¿Podrían%20darme%20más%20información?', '_blank');
+                }
+            } else {
+                // En desktop, mostrar información completa
+                alert('¡Excelente decisión! 🎉\n\nElige tu modalidad para contactarnos por WhatsApp:\n\n📱 Plan Diario (Mujeres): 5570-9214\n📱 Plan Domingo (Hombres): 4416-0597\n\nO haz clic en los enlaces de WhatsApp en la sección de contacto para abrir el chat directamente.\n\n¡Tu educación te está esperando!');
+            }
+        }
+
+        function showComingSoon(service) {
+            alert(`📚 ${service}\n\nEsta sección estará disponible próximamente. Por favor mantente atento a nuestras actualizaciones.\n\nPara más información, contáctanos por WhatsApp.`);
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add entrance animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const animatedElements = document.querySelectorAll('.service-card, .program-card, .feature-item');
+            animatedElements.forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'all 0.6s ease';
+                observer.observe(el);
+            });
+        });
+
+        // Mobile menu toggle (basic implementation)
+        document.querySelector('.mobile-menu').addEventListener('click', function() {
+            const navMenu = document.querySelector('.nav-menu');
+            navMenu.style.display = navMenu.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        // Quick Access Dropdowns
+        document.addEventListener('DOMContentLoaded', function() {
+            const quickAccessDropdowns = document.querySelectorAll('.dropdown');
+            
+            quickAccessDropdowns.forEach(dropdown => {
+                const button = dropdown.querySelector('button');
+                const content = dropdown.querySelector('.dropdown-content');
+                
+                if (button && content) {
+                    button.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        
+                        // Close all other dropdowns
+                        quickAccessDropdowns.forEach(otherDropdown => {
+                            if (otherDropdown !== dropdown) {
+                                const otherContent = otherDropdown.querySelector('.dropdown-content');
+                                if (otherContent) {
+                                    otherContent.style.display = 'none';
+                                }
+                            }
+                        });
+                        
+                        // Toggle current dropdown
+                        content.style.display = content.style.display === 'block' ? 'none' : 'block';
+                    });
+                }
+            });
+            
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function(e) {
+                quickAccessDropdowns.forEach(dropdown => {
+                    const content = dropdown.querySelector('.dropdown-content');
+                    if (content && !dropdown.contains(e.target)) {
+                        content.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
